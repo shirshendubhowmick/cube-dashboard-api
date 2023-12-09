@@ -4,6 +4,7 @@ import (
 	"main/configs"
 	"main/internal/app"
 	"main/internal/app/router"
+	"main/internal/db"
 
 	"github.com/joho/godotenv"
 )
@@ -14,6 +15,12 @@ func main() {
 		panic(err)
 	}
 	configs.InitEnvConfig()
+
+	_, err = db.Init()
+
+	if err != nil {
+		panic(err)
+	}
 
 	appInstance := app.Init()
 
