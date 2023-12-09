@@ -96,7 +96,6 @@ func ProcessMeteoriteData() error {
 	}
 
 	return nil
-
 }
 
 func loadMeteoriteData(data *[]MeteoriteData) error {
