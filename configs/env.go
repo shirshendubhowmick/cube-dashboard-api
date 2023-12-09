@@ -9,6 +9,7 @@ var (
 	PostgresUser     string
 	PostgresPassword string
 	PostgresDBName   string
+	GoogleMapApiKey  string
 )
 
 func InitEnvConfig() {
@@ -42,6 +43,12 @@ func InitEnvConfig() {
 
 	if PostgresDBName == "" {
 		panic("POSTGRES_DB_NAME env variable is not set")
+	}
+
+	GoogleMapApiKey = os.Getenv("GOOGLE_MAP_API_KEY")
+
+	if GoogleMapApiKey == "" {
+		panic("POSITIONSTACK_API_KEY env variable is not set")
 	}
 
 }
