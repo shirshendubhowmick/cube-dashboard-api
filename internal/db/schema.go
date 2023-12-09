@@ -28,6 +28,9 @@ type MeteoriteData struct {
 var DB *gorm.DB
 
 func Init() (*gorm.DB, error) {
+	if DB != nil {
+		return DB, nil
+	}
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=require TimeZone=Asia/Kolkata", configs.PostgresHost, configs.PostgresUser, configs.PostgresPassword, configs.PostgresDBName, configs.PostgresPort)
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
