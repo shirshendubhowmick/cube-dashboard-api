@@ -5,21 +5,25 @@ import (
 	"main/internal/app"
 	"main/internal/app/router"
 	"main/internal/db"
+	"main/internal/services/logger"
 
 	"github.com/joho/godotenv"
 )
 
 func main() {
+	logger.Init(true)
+	logger.Log.Info("Logger initialized")
+
 	err := godotenv.Load()
 	if err != nil {
-		panic(err)
+		logger.Log.Panicw("Error loading .env file", "error", err)
 	}
 	configs.InitEnvConfig()
 
 	_, err = db.Init()
 
 	if err != nil {
-		panic(err)
+		logger.Log.Panicw("Error initializing database", "error", err)
 	}
 
 	appInstance := app.Init()
