@@ -25,17 +25,19 @@ type MeteoriteData struct {
 	UpdatedAt     time.Time
 }
 
+var DB *gorm.DB
+
 func Init() (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=require TimeZone=Asia/Kolkata", configs.PostgresHost, configs.PostgresUser, configs.PostgresPassword, configs.PostgresDBName, configs.PostgresPort)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		return nil, err
 	}
 
-	if err := db.AutoMigrate(&MeteoriteData{}); err != nil {
+	if err := DB.AutoMigrate(&MeteoriteData{}); err != nil {
 		return nil, err
 	}
 
-	return db, nil
+	return DB, nil
 }
