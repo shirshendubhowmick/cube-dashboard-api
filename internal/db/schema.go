@@ -14,7 +14,7 @@ type MeteoriteData struct {
 	ID            uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()"`
 	Name          string
 	Mass          float32
-	DiscoveryType string `gorm:"discovery_type_check,discovery_type in ('fell', 'found')"`
+	DiscoveryType string `gorm:"check:discovery_type_check,discovery_type in ('fell', 'found')"`
 	Year          *uint
 	Latitude      float32
 	Longitude     float32
