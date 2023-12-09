@@ -8,6 +8,6 @@ import (
 )
 
 func HandleMeteoriteData(ginContext *gin.Context) {
-	services.DownloadMeteoriteData()
+	go services.ProcessMeteoriteData()
 	ginContext.Status(http.StatusAccepted)
 }
