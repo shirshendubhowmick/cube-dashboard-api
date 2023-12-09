@@ -12,15 +12,14 @@ import (
 
 type MeteoriteData struct {
 	ID            uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()"`
-	Name          string
+	Name          string    `gorm:"unique"`
 	Mass          float32
 	DiscoveryType string `gorm:"check:discovery_type_check,discovery_type in ('fell', 'found')"`
 	Year          *uint
 	Latitude      float32
 	Longitude     float32
-	Region        string
 	Country       string
-	City          string
+	Region        string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
@@ -32,11 +31,13 @@ func Init() (*gorm.DB, error) {
 		return DB, nil
 	}
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=require TimeZone=Asia/Kolkata", configs.PostgresHost, configs.PostgresUser, configs.PostgresPassword, configs.PostgresDBName, configs.PostgresPort)
-	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		return nil, err
 	}
+
+	DB = db
 
 	if err := DB.AutoMigrate(&MeteoriteData{}); err != nil {
 		return nil, err
