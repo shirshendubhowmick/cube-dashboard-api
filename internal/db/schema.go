@@ -24,6 +24,17 @@ type MeteoriteData struct {
 	UpdatedAt     time.Time
 }
 
+type Users struct {
+	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()"`
+	UserName  string    `gorm:"unique"`
+	FirstName string
+	LastName  string
+	Active    bool
+	Password  string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
 var DB *gorm.DB
 
 func Init() (*gorm.DB, error) {
@@ -39,7 +50,7 @@ func Init() (*gorm.DB, error) {
 
 	DB = db
 
-	if err := DB.AutoMigrate(&MeteoriteData{}); err != nil {
+	if err := DB.AutoMigrate(&MeteoriteData{}, &Users{}); err != nil {
 		return nil, err
 	}
 
