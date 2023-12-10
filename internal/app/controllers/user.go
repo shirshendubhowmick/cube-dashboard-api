@@ -2,9 +2,14 @@ package controllers
 
 import (
 	"fmt"
+	"main/configs"
 	apperrors "main/internal/app/appErrors"
+	"main/internal/app/constants"
 	"main/internal/app/utils"
+	"main/internal/db"
 	"main/internal/services"
+	"main/internal/services/jwt"
+	"main/internal/services/logger"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -33,7 +38,7 @@ func CreateUserSession(ginContext *gin.Context) {
 	fmt.Println(cubeJwt)
 
 	ginContext.SetSameSite(http.SameSiteStrictMode)
-	ginContext.SetCookie("__xauth", userJwt, int(maxAge), "/", "", false, true)
+	ginContext.SetCookie(constants.AuthCookieName, userJwt, int(maxAge), "/", "", false, true)
 
 	ginContext.JSON(http.StatusCreated, utils.GenerateSuccessResponse(map[string]interface{}{
 		"user":         user,
@@ -41,4 +46,39 @@ func CreateUserSession(ginContext *gin.Context) {
 		"csrfToken":    csrfToken,
 	}))
 
+}
+
+func GetUserSession(ginContext *gin.Context) {
+	value, ok := ginContext.Get("user")
+	if !ok {
+		logger.AppControllerLog.Errorw("Error getting user from gin context")
+		errResponse := apperrors.New("E001")
+		ginContext.AbortWithStatusJSON(errResponse.HttpStatusCode, errResponse)
+		return
+	}
+
+	user, ok := value.(db.Users)
+
+	if !ok {
+		logger.AppControllerLog.Errorw("Error asserting user from gin context")
+		errResponse := apperrors.New("E001")
+		ginContext.AbortWithStatusJSON(errResponse.HttpStatusCode, errResponse)
+		return
+	}
+
+	cubeApiToken, _, err := jwt.Sign(jwt.GenerationData{
+		Key: configs.CubeAPISecret,
+	})
+
+	if err != nil {
+		logger.AppControllerLog.Errorw("Error generating cube api token", "error", err)
+		errResponse := apperrors.New("E001")
+		ginContext.AbortWithStatusJSON(errResponse.HttpStatusCode, errResponse)
+		return
+	}
+
+	ginContext.JSON(http.StatusOK, utils.GenerateSuccessResponse(map[string]interface{}{
+		"user":         user,
+		"cubeApiToken": cubeApiToken,
+	}))
 }

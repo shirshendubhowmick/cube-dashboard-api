@@ -2,6 +2,7 @@ package router
 
 import (
 	"main/internal/app/controllers"
+	"main/internal/app/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,4 +16,5 @@ func Init(app *gin.Engine) {
 
 	userRoute := app.Group("/user")
 	userRoute.POST("/session", controllers.CreateUserSession)
+	userRoute.GET("/session", middlewares.Authorization(), controllers.GetUserSession)
 }
