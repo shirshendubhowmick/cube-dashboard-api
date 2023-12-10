@@ -35,6 +35,16 @@ type Users struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
+type DataIngestionRequests struct {
+	ID          uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()" json:"id"`
+	DataName    string    `json:"dataName"`
+	InProgress  bool      `json:"inProgress"`
+	RequestedBy uuid.UUID `gorm:"type:uuid" json:"requestedBy"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+	Users       Users     `gorm:"foreignKey:RequestedBy"`
+}
+
 var DB *gorm.DB
 
 func Init() (*gorm.DB, error) {
@@ -50,7 +60,7 @@ func Init() (*gorm.DB, error) {
 
 	DB = db
 
-	if err := DB.AutoMigrate(&MeteoriteData{}, &Users{}); err != nil {
+	if err := DB.AutoMigrate(&MeteoriteData{}, &Users{}, &DataIngestionRequests{}); err != nil {
 		return nil, err
 	}
 
