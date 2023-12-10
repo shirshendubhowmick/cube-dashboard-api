@@ -52,6 +52,12 @@ var AppErrors = AppErrorCodeMap{
 		Details:        "Credentials not active",
 		HttpStatusCode: http.StatusForbidden,
 	},
+	"E007": AppError{
+		Code:           "E007",
+		Message:        "Too many requests",
+		Details:        "Too many requests. Can only be processed after reaching threshold",
+		HttpStatusCode: http.StatusTooManyRequests,
+	},
 }
 
 type ErrorResponse struct {
