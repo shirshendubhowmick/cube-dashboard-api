@@ -20,6 +20,8 @@ var AppMiddlewareLog *logger.ZapLogger
 
 var AppServiceLog *logger.ZapLogger
 
+var AppMiscLog *logger.ZapLogger
+
 // Init : Initialized the logger
 func Init(isDevelopment bool) {
 	if Log == nil {
@@ -28,5 +30,6 @@ func Init(isDevelopment bool) {
 		AppControllerLog = Log.With(contextKey, constants.AppControllerLoggerType)
 		AppMiddlewareLog = Log.With(contextKey, constants.AppMiddlewareLoggerType)
 		AppServiceLog = Log.With(contextKey, constants.AppServiceLoggerType)
+		AppMiscLog = Log.With(contextKey, constants.AppMiscLoggerType)
 	}
 }
