@@ -10,6 +10,7 @@ var (
 	PostgresPassword string
 	PostgresDBName   string
 	GoogleMapApiKey  string
+	APIJWTSecret     string
 )
 
 func InitEnvConfig() {
@@ -51,4 +52,7 @@ func InitEnvConfig() {
 		panic("POSITIONSTACK_API_KEY env variable is not set")
 	}
 
+	if APIJWTSecret == "" {
+		panic("API_JWT_SECRET env variable is not set")
+	}
 }
