@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func VerifyUserCredentials(username string, password string) (string, string, *apperrors.ErrorResponse) {
+func VerifyUserCredentials(username string, password string) (*db.Users, string, string, *apperrors.ErrorResponse) {
 	user := &db.Users{
 		UserName: username,
 		Active:   true,
@@ -21,13 +21,13 @@ func VerifyUserCredentials(username string, password string) (string, string, *a
 	if tx.Error != nil {
 		logger.AppServiceLog.Errorw("Error while fetching user", "error", tx.Error)
 		errResponse := apperrors.New("E001")
-		return "", "", &errResponse
+		return nil, "", "", &errResponse
 	}
 
 	if tx.RowsAffected == 0 {
 		logger.AppServiceLog.Errorw("No active user found", "username", username)
 		errResponse := apperrors.New("E004")
-		return "", "", &errResponse
+		return nil, "", "", &errResponse
 	}
 
 	storedPassword, err := base64.StdEncoding.DecodeString(user.Password)
@@ -35,7 +35,7 @@ func VerifyUserCredentials(username string, password string) (string, string, *a
 	if err != nil {
 		logger.AppServiceLog.Errorw("Error while decoding password", "error", err)
 		errResponse := apperrors.New("E001")
-		return "", "", &errResponse
+		return nil, "", "", &errResponse
 	}
 
 	err = bcrypt.CompareHashAndPassword(storedPassword, []byte(password))
@@ -43,7 +43,7 @@ func VerifyUserCredentials(username string, password string) (string, string, *a
 	if err != nil {
 		logger.AppServiceLog.Infow("Comparing password failed", "username", username)
 		errResponse := apperrors.New("E004")
-		return "", "", &errResponse
+		return nil, "", "", &errResponse
 	}
 
 	logger.AppServiceLog.Infow("User credentials validated", "username", username)
@@ -58,7 +58,7 @@ func VerifyUserCredentials(username string, password string) (string, string, *a
 	if err != nil {
 		logger.AppServiceLog.Errorw("Error generating user JWT", "error", err)
 		errResponse := apperrors.New("E001")
-		return "", "", &errResponse
+		return nil, "", "", &errResponse
 	}
 
 	cubeJwt, _, err := jwt.Sign(jwt.GenerationData{
@@ -68,8 +68,8 @@ func VerifyUserCredentials(username string, password string) (string, string, *a
 	if err != nil {
 		logger.AppServiceLog.Errorw("Error generating cube JWT", "error", err)
 		errResponse := apperrors.New("E001")
-		return "", "", &errResponse
+		return nil, "", "", &errResponse
 	}
 
-	return userJwt, cubeJwt, nil
+	return user, userJwt, cubeJwt, nil
 }
