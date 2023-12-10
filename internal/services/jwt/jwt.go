@@ -16,7 +16,7 @@ type GenerationData struct {
 	Key     string
 }
 
-func Sign(data GenerationData) (string, time.Time, error) {
+func Sign(data GenerationData) (string, time.Duration, error) {
 	duration := data.Expiry
 	if duration == 0 {
 		duration = time.Second * 86400
@@ -33,7 +33,7 @@ func Sign(data GenerationData) (string, time.Time, error) {
 
 	signedToken, err := jwt.Sign(token, jwa.HS256, []byte(data.Key))
 
-	return string(signedToken), expiry, err
+	return string(signedToken), duration, err
 }
 
 func Verify(token string, key string) (Payload, error) {
