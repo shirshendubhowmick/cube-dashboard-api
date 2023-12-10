@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"main/configs"
 	apperrors "main/internal/app/appErrors"
 	"main/internal/app/constants"
@@ -33,9 +32,6 @@ func CreateUserSession(ginContext *gin.Context) {
 		ginContext.AbortWithStatusJSON(errorResponse.HttpStatusCode, errorResponse)
 		return
 	}
-
-	fmt.Println(userJwt)
-	fmt.Println(cubeJwt)
 
 	ginContext.SetSameSite(http.SameSiteStrictMode)
 	ginContext.SetCookie(constants.AuthCookieName, userJwt, int(maxAge), "/", "", false, true)
