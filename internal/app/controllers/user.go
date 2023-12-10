@@ -15,8 +15,8 @@ import (
 )
 
 type LoginRequestBody struct {
-	User     string `json:"user" validate:"required,min:8,max:16"`
-	Password string `json:"password" validate:"required,min:8,max:16"`
+	Username string `json:"username" binding:"required,min=6,max=16"`
+	Password string `json:"password" binding:"required,min=8,max=16"`
 }
 
 func CreateUserSession(ginContext *gin.Context) {
@@ -26,7 +26,7 @@ func CreateUserSession(ginContext *gin.Context) {
 		ginContext.AbortWithStatusJSON(errResponse.HttpStatusCode, errResponse)
 		return
 	}
-	user, userJwt, csrfToken, maxAge, cubeJwt, errorResponse := services.VerifyUserCredentials(body.User, body.Password)
+	user, userJwt, csrfToken, maxAge, cubeJwt, errorResponse := services.VerifyUserCredentials(body.Username, body.Password)
 
 	if errorResponse != nil {
 		ginContext.AbortWithStatusJSON(errorResponse.HttpStatusCode, errorResponse)

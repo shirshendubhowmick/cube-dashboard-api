@@ -46,6 +46,12 @@ var AppErrors = AppErrorCodeMap{
 		Details:        "Missing or invalid authorization data",
 		HttpStatusCode: http.StatusUnauthorized,
 	},
+	"E006": AppError{
+		Code:           "E006",
+		Message:        "Forbidden",
+		Details:        "Credentials not active",
+		HttpStatusCode: http.StatusForbidden,
+	},
 }
 
 type ErrorResponse struct {

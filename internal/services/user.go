@@ -15,11 +15,8 @@ import (
 
 func VerifyUserCredentials(username string, password string) (*db.Users, string, string, time.Duration, string, *apperrors.ErrorResponse) {
 	zeroTime := time.Duration(0)
-	user := &db.Users{
-		UserName: username,
-		Active:   true,
-	}
-	tx := db.DB.Find(&user)
+	user := &db.Users{}
+	tx := db.DB.Where("user_name = ?", username).Find(&user)
 
 	if tx.Error != nil {
 		logger.AppServiceLog.Errorw("Error while fetching user", "error", tx.Error)
@@ -28,8 +25,14 @@ func VerifyUserCredentials(username string, password string) (*db.Users, string,
 	}
 
 	if tx.RowsAffected == 0 {
-		logger.AppServiceLog.Errorw("No active user found", "username", username)
+		logger.AppServiceLog.Infow("No active user found", "username", username)
 		errResponse := apperrors.New("E004")
+		return nil, "", "", zeroTime, "", &errResponse
+	}
+
+	if !user.Active {
+		logger.AppServiceLog.Infow("User is not active", "username", username)
+		errResponse := apperrors.New("E006")
 		return nil, "", "", zeroTime, "", &errResponse
 	}
 

@@ -55,12 +55,9 @@ func Authorization() gin.HandlerFunc {
 			return
 		}
 
-		user := db.Users{
-			UserName: username.(string),
-			Active:   true,
-		}
+		user := db.Users{}
 
-		tx := db.DB.Find(&user)
+		tx := db.DB.Where("user_name = ?", username).Find(&user)
 
 		if tx.Error != nil {
 			logger.AppMiddlewareLog.Errorw("Error while fetching user", "error", tx.Error)
@@ -72,6 +69,13 @@ func Authorization() gin.HandlerFunc {
 		if tx.RowsAffected == 0 {
 			logger.AppMiddlewareLog.Infow("No active user found", "username", username)
 			errorResponse := apperrors.New("E004")
+			ginContext.AbortWithStatusJSON(errorResponse.HttpStatusCode, errorResponse)
+			return
+		}
+
+		if !user.Active {
+			logger.AppMiddlewareLog.Infow("User is not active", "username", username)
+			errorResponse := apperrors.New("E006")
 			ginContext.AbortWithStatusJSON(errorResponse.HttpStatusCode, errorResponse)
 			return
 		}
