@@ -8,6 +8,7 @@ import (
 )
 
 func Init(app *gin.Engine) {
+	app.Use(middlewares.Cors())
 	rootRoute := app.Group("/")
 	rootRoute.GET("/", controllers.RootController)
 
