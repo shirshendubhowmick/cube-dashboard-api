@@ -12,4 +12,7 @@ func Init(app *gin.Engine) {
 
 	dataRoute := app.Group("/data")
 	dataRoute.PUT("/ingest/meteriote", controllers.HandleMeteoriteData)
+
+	userRoute := app.Group("/user")
+	userRoute.POST("/session", controllers.CreateUserSession)
 }
