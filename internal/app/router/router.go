@@ -12,7 +12,7 @@ func Init(app *gin.Engine) {
 	rootRoute := app.Group("/")
 	rootRoute.GET("/", controllers.RootController)
 
-	dataRoute := app.Group("/data")
+	dataRoute := app.Group("/data", middlewares.Authorization())
 	dataRoute.PUT("/ingest/meteriote", controllers.HandleMeteoriteData)
 
 	userRoute := app.Group("/user")

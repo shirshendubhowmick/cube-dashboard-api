@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/go-resty/resty/v2"
+	"github.com/google/uuid"
 	"gorm.io/gorm/clause"
 )
 
@@ -80,7 +81,7 @@ type googleReverseGeoCodeInfo struct {
 	Status string `json:"status"`
 }
 
-func ProcessMeteoriteData() error {
+func ProcessMeteoriteData(requestId uuid.UUID) error {
 	meteoriteData, err := downloadMeteoriteData()
 
 	if err != nil {
@@ -93,6 +94,12 @@ func ProcessMeteoriteData() error {
 	for i := 0; i < meteoriteDataLength/50; i += 1 {
 		dataSlice := (*meteoriteData)[i*50 : (i+1)*50]
 		loadMeteoriteData(&dataSlice)
+	}
+
+	logger.AppServiceLog.Infow("Meteorite data processed", "count", meteoriteDataLength, "requestId", requestId)
+
+	if ok := MarkIngestionComplete(requestId); !ok {
+		logger.AppServiceLog.Errorw("Error while marking ingestion complete", "requestId", requestId)
 	}
 
 	return nil
