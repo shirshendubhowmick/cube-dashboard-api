@@ -40,6 +40,12 @@ var AppErrors = AppErrorCodeMap{
 		Details:        "The requested resource was not found",
 		HttpStatusCode: http.StatusNotFound,
 	},
+	"E005": AppError{
+		Code:           "E005",
+		Message:        "Unauthorized",
+		Details:        "Missing or invalid authorization data",
+		HttpStatusCode: http.StatusUnauthorized,
+	},
 }
 
 type ErrorResponse struct {
