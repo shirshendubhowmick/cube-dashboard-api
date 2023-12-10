@@ -25,14 +25,14 @@ type MeteoriteData struct {
 }
 
 type Users struct {
-	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()"`
-	UserName  string    `gorm:"unique"`
-	FirstName string
-	LastName  string
-	Active    bool
-	Password  string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()" json:"id"`
+	UserName  string    `gorm:"unique" json:"username"`
+	FirstName string    `json:"firstName"`
+	LastName  string    `json:"lastName"`
+	Active    bool      `json:"active"`
+	Password  string    `json:"-"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 var DB *gorm.DB
