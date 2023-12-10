@@ -11,6 +11,7 @@ var (
 	PostgresDBName   string
 	GoogleMapApiKey  string
 	APIJWTSecret     string
+	CubeAPISecret    string
 )
 
 func InitEnvConfig() {
@@ -52,7 +53,15 @@ func InitEnvConfig() {
 		panic("POSITIONSTACK_API_KEY env variable is not set")
 	}
 
+	APIJWTSecret = os.Getenv("API_JWT_SECRET")
+
 	if APIJWTSecret == "" {
 		panic("API_JWT_SECRET env variable is not set")
+	}
+
+	CubeAPISecret = os.Getenv("CUBE_API_SECRET")
+
+	if CubeAPISecret == "" {
+		panic("CUBE_API_SECRET env variable is not set")
 	}
 }
