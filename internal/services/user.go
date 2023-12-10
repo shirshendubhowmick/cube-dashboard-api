@@ -2,8 +2,10 @@ package services
 
 import (
 	"encoding/base64"
+	"main/configs"
 	apperrors "main/internal/app/appErrors"
 	"main/internal/db"
+	"main/internal/services/jwt"
 	"main/internal/services/logger"
 
 	"golang.org/x/crypto/bcrypt"
@@ -46,6 +48,18 @@ func VerifyUserCredentials(username string, password string) (string, *apperrors
 
 	logger.AppServiceLog.Infow("User credentials validated", "username", username)
 
-	// bcrypt.CompareHashAndPassword([]byte("$2a$10$1Z0Z1Z0Z1Z0Z1Z0Z1Z0Z1OuZ1Z0Z1Z0Z1Z0Z1Z0Z1Z0Z1Z0Z1Z0Z1"), []byte(password))
-	return "", nil
+	jwt, _, err := jwt.Sign(jwt.GenerationData{
+		Payload: jwt.Payload{
+			"username": username,
+		},
+		Key: configs.APIJWTSecret,
+	})
+
+	if err != nil {
+		logger.AppServiceLog.Errorw("Error generating user JWT", "error", err)
+		errResponse := apperrors.New("E001")
+		return "", &errResponse
+	}
+
+	return jwt, nil
 }
