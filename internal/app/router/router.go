@@ -17,4 +17,5 @@ func Init(app *gin.Engine) {
 	userRoute := app.Group("/user")
 	userRoute.POST("/session", controllers.CreateUserSession)
 	userRoute.GET("/session", middlewares.Authorization(), controllers.GetUserSession)
+	userRoute.DELETE("/session", controllers.DeleteUserSession)
 }

@@ -82,3 +82,8 @@ func GetUserSession(ginContext *gin.Context) {
 		"cubeApiToken": cubeApiToken,
 	}))
 }
+
+func DeleteUserSession(ginContext *gin.Context) {
+	ginContext.SetCookie(constants.AuthCookieName, "", -1, "/", "", false, true)
+	ginContext.JSON(http.StatusNoContent, utils.GenerateSuccessResponse(nil))
+}
