@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Init(app *gin.Engine) {
+func Init(app *gin.Engine) *gin.Engine {
 	app.Use(middlewares.Cors())
 	rootRoute := app.Group("/")
 	rootRoute.GET("/", controllers.RootController)
@@ -19,4 +19,6 @@ func Init(app *gin.Engine) {
 	userRoute.POST("/session", controllers.CreateUserSession)
 	userRoute.GET("/session", middlewares.Authorization(), controllers.GetUserSession)
 	userRoute.DELETE("/session", controllers.DeleteUserSession)
+
+	return app
 }
