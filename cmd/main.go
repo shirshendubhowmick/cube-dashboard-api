@@ -11,8 +11,9 @@ import (
 )
 
 func main() {
-	logger.Init(true)
+	log := logger.Init(true)
 	logger.Log.Info("Logger initialized")
+	defer log.Sync()
 
 	err := godotenv.Load()
 	if err != nil {

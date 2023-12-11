@@ -23,7 +23,7 @@ var AppServiceLog *logger.ZapLogger
 var AppMiscLog *logger.ZapLogger
 
 // Init : Initialized the logger
-func Init(isDevelopment bool) {
+func Init(isDevelopment bool) *logger.ZapLogger {
 	if Log == nil {
 		Log = logger.Init(isDevelopment, "cube-dashboard-api")
 		AppRequestResponseLog = Log.With(contextKey, constants.AppRequestResponseLoggerType)
@@ -32,4 +32,6 @@ func Init(isDevelopment bool) {
 		AppServiceLog = Log.With(contextKey, constants.AppServiceLoggerType)
 		AppMiscLog = Log.With(contextKey, constants.AppMiscLoggerType)
 	}
+
+	return Log
 }
